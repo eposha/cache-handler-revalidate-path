@@ -18,17 +18,23 @@ module.exports = class CacheHandler {
     console.log('key', key);
     console.log('data', data);
     console.log('ctx', ctx);
+
+    const headersCacheTags = data?.headers?.['x-next-cache-tags']?.split(',');
+
+    console.log('headersCacheTags', headersCacheTags);
+
+    const tags = ctx.tags ?? headersCacheTags;
     // This could be stored anywhere, like durable storage
     cache.set(key, {
       value: data,
       lastModified: Date.now(),
-      tags: ctx.tags,
+      tags: tags,
     });
   }
 
   async revalidateTag(tags) {
     // tags is either a string or an array of strings
-
+    console.log('tags', tags);
     tags = [tags].flat();
     // Iterate over all entries in the cache
     for (let [key, value] of cache) {
